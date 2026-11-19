@@ -1,0 +1,6 @@
+{
+  "name": "Dastan AR — Lahore Fort & Japanese Pavilion",
+  "description": "Interactive 3D & AR Tourist Guide for Lahore Fort (Shahi Qila) and Japanese Heritage 3D Model & Residence with synchronized character voice-over narration.",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
