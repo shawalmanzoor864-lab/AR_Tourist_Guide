@@ -5,6 +5,9 @@ import { Viewport3D } from './components/Viewport3D';
 import {
   ALL_STOPS_BY_MODULE,
   ArBackdropMode,
+  JAPANESE_PAVILION_STOPS,
+  JAPANESE_VOICEOVER_URL,
+  LAHORE_FORT_VOICEOVER_CUES,
   LAHORE_FORT_VOICEOVER_STOP_IDS,
   LAHORE_FORT_VOICEOVER_URL,
   LightingPreset,
@@ -41,12 +44,17 @@ export default function App() {
   const [customAudioMap] = useState<
     Record<string, { name: string; url: string }>
   >(() =>
-    Object.fromEntries(
-      LAHORE_FORT_VOICEOVER_STOP_IDS.map((id) => [
+    Object.fromEntries([
+      ...LAHORE_FORT_VOICEOVER_STOP_IDS.map((id) => [
         id,
         { name: 'Lahore Fort voice-over.mp3', url: LAHORE_FORT_VOICEOVER_URL },
       ]),
-    ),
+      // Japanese commander: every stop plays the recorded voice-over (no text-to-speech)
+      ...JAPANESE_PAVILION_STOPS.map((st) => [
+        st.id,
+        { name: 'Japanese voice-over.mp3', url: JAPANESE_VOICEOVER_URL },
+      ]),
+    ]),
   );
 
   // Mutable 60fps speech amplitude ref passed into Three.js loop without re-renders
@@ -61,9 +69,13 @@ export default function App() {
   const effectiveLang: VoiceLanguage =
     activeModule === 'lahore-fort' && voiceLanguage === 'ja' ? 'en' : voiceLanguage;
 
+  // Stops with a recorded voice-over show their short summary instead of the old narration script
   const activeScript = useMemo(
-    () => getScriptForLanguage(activeStop, effectiveLang),
-    [activeStop, effectiveLang],
+    () =>
+      customAudioMap[activeStop.id]
+        ? activeStop.summary
+        : getScriptForLanguage(activeStop, effectiveLang),
+    [activeStop, effectiveLang, customAudioMap],
   );
 
   const showTemporaryNotice = useCallback((msg: string) => {
@@ -100,7 +112,26 @@ export default function App() {
       };
 
       if (customAudio) {
-        voiceEngine.speakCustomAudio(customAudio.url, callbacks);
+        // Recorded Lahore Fort tour: follow the cue table and navigate to each place as it is narrated
+        let lastCueStop = stop.id;
+        const cuedCallbacks =
+          stop.module === 'lahore-fort'
+            ? {
+                ...callbacks,
+                onTime: (t: number) => {
+                  let cue: (typeof LAHORE_FORT_VOICEOVER_CUES)[number] | undefined;
+                  for (const c of LAHORE_FORT_VOICEOVER_CUES) {
+                    if (c.at <= t) cue = c;
+                  }
+                  if (cue && cue.stopId !== lastCueStop) {
+                    lastCueStop = cue.stopId;
+                    const target = cue.stopId;
+                    setActiveStopIdByModule((prev) => ({ ...prev, 'lahore-fort': target }));
+                  }
+                },
+              }
+            : callbacks;
+        voiceEngine.speakCustomAudio(customAudio.url, cuedCallbacks);
       } else {
         const text = getScriptForLanguage(stop, lang);
         voiceEngine.speakText(text, lang, rate, callbacks);
@@ -230,7 +261,7 @@ export default function App() {
 
         {/* Minimal single-line floating context prompt at top-center (non-blocking) */}
         <div className="pointer-events-none absolute top-4 left-1/2 -translate-x-1/2 z-10 text-center">
-          <p className="text-xs text-[#e5dfd3]/85 bg-[#11151c]/80 border border-white/10 px-3.5 py-1.5 rounded-lg whitespace-nowrap">
+          <p className="text-xs text-[#e5dfd3]/85 bg-[#11151c]/80 border border-white/10 px-3.5 py-1.5 rounded-lg md:whitespace-nowrap max-w-[92vw]">
             {activeModule === 'lahore-fort'
               ? 'Click any Lahore Fort landmark in 3D or below for AR guide voice-over'
               : 'Click the Japanese commander or the heritage house to hear voice-over'}

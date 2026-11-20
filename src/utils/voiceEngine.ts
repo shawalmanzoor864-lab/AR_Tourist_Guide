@@ -5,6 +5,8 @@ export interface VoiceStateCallbacks {
   onEnd: () => void;
   onAmplitude: (amp: number) => void;
   onProgress: (ratio: number) => void;
+  /** Optional: current playback time in seconds (recorded audio only) */
+  onTime?: (seconds: number) => void;
 }
 
 class VoiceOverEngine {
@@ -181,6 +183,7 @@ class VoiceOverEngine {
         amp = Math.min(1, sum / (12 * 140));
       }
       callbacks.onAmplitude(amp);
+      callbacks.onTime?.(this.customAudio.currentTime);
       if (this.customAudio.duration > 0) {
         callbacks.onProgress(Math.min(1, this.customAudio.currentTime / this.customAudio.duration));
       }

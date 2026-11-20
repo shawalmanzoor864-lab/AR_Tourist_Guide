@@ -20,12 +20,12 @@ export const TopBar: React.FC<TopBarProps> = ({
   onTogglePlayNarration,
 }) => {
   return (
-    <header className="relative z-20 flex items-center justify-between gap-8 px-6 h-16 bg-[#0e1116]/94 border-b border-white/10">
+    <header className="relative z-20 flex items-center justify-between gap-3 md:gap-8 px-3 md:px-6 h-16 bg-[#0e1116]/94 border-b border-white/10">
       {/* Zone 1: Single-element Brand Wordmark */}
       <button
         type="button"
         onClick={() => onSelectModule('lahore-fort')}
-        className="font-display text-xl font-semibold tracking-tight text-[#f4f1ea] whitespace-nowrap shrink-0 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-amber-400"
+        className="font-display text-base md:text-xl font-semibold tracking-tight text-[#f4f1ea] whitespace-nowrap shrink-0 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-amber-400"
       >
         Dastan AR
       </button>
@@ -33,7 +33,7 @@ export const TopBar: React.FC<TopBarProps> = ({
       {/* Zone 2: 4 single-line navigation links */}
       <nav
         aria-label="Primary modules"
-        className="flex items-center gap-6 overflow-x-auto no-scrollbar text-sm font-medium"
+        className="flex items-center gap-4 md:gap-6 overflow-x-auto no-scrollbar text-xs md:text-sm font-medium"
       >
         <button
           type="button"
@@ -78,17 +78,17 @@ export const TopBar: React.FC<TopBarProps> = ({
         <button
           type="button"
           onClick={onTogglePlayNarration}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold bg-amber-600 hover:bg-amber-500 text-white transition-colors whitespace-nowrap shrink-0 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-400"
+          className="inline-flex items-center gap-2 px-3 md:px-4 py-2 rounded-lg text-xs font-semibold bg-amber-600 hover:bg-amber-500 text-white transition-colors whitespace-nowrap shrink-0 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-400"
         >
           {isSpeaking ? (
             <>
               <VolumeX className="w-3.5 h-3.5" aria-hidden="true" />
-              <span>Stop Narration</span>
+              <span className="hidden md:inline">Stop Narration</span><span className="md:hidden">Stop</span>
             </>
           ) : (
             <>
               <Volume2 className="w-3.5 h-3.5" aria-hidden="true" />
-              <span>Start Voice Tour</span>
+              <span className="hidden md:inline">Start Voice Tour</span><span className="md:hidden">Voice</span>
             </>
           )}
         </button>

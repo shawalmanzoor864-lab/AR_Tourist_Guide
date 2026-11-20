@@ -38,6 +38,24 @@ export const LAHORE_FORT_VOICEOVER_URL = `${import.meta.env.BASE_URL}audio/lahor
 /** Stops that play the recorded voice-over instead of the built-in text-to-speech narration */
 export const LAHORE_FORT_VOICEOVER_STOP_IDS = ['alamgiri-gate'];
 
+/** Recorded Japanese commander voice-over (replaces the old text-to-speech narration) */
+export const JAPANESE_VOICEOVER_URL = `${import.meta.env.BASE_URL}audio/japanese-voiceover.mp3`;
+
+/**
+ * Navigation cues for the recorded Lahore Fort voice-over: when the audio reaches `at` seconds,
+ * the camera + guide move to that stop (same as clicking its button).
+ * NOTE: these times are PLACEHOLDERS (even split of the 2:45 recording). Replace each `at`
+ * with the second where that place starts being mentioned in the audio.
+ */
+export const LAHORE_FORT_VOICEOVER_CUES: Array<{ at: number; stopId: string }> = [
+  { at: 0, stopId: 'alamgiri-gate' },
+  { at: 27, stopId: 'sheesh-mahal' },
+  { at: 55, stopId: 'diwan-e-aam' },
+  { at: 82, stopId: 'naulakha-pavilion' },
+  { at: 110, stopId: 'picture-wall' },
+  { at: 137, stopId: 'moti-masjid' },
+];
+
 export const LAHORE_FORT_STOPS: TourStop[] = [
   {
     id: 'alamgiri-gate',
