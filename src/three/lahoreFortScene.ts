@@ -1,9 +1,17 @@
 import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { LAHORE_FORT_STOPS } from '../data/tourData';
 import { ProceduralTexturePack } from './proceduralTextures';
 
-/** Default Badshah (king) guide model for the Lahore Fort module (served from /public/models) */
-export const LAHORE_GUIDE_MODEL_URL = `${import.meta.env.BASE_URL}models/lahore-badsha.glb`;
+/** Default Akbar Badshah (king) guide model for the Lahore Fort module (served from /public/models) */
+export const LAHORE_GUIDE_MODEL_URL = `${import.meta.env.BASE_URL}models/lahore-akbar.glb`;
+/** Akbari Mahal background building for the Lahore Fort module (served from /public/models) */
+export const LAHORE_FORT_BG_MODEL_URL = `${import.meta.env.BASE_URL}models/lahore-akbari-mahal.glb`;
+
+/** Footprint (longest horizontal side) of the Akbari Mahal backdrop, in scene units */
+const FORT_BG_FOOTPRINT = 11;
+/** Where the backdrop's bottom-center sits: just behind the courtyard's rear rampart */
+const FORT_BG_POSITION: [number, number, number] = [0, 0, -10.6];
 
 export interface CharacterRig {
   root: THREE.Group;
@@ -329,6 +337,41 @@ export function buildLahoreFortScene(
   eastWall.castShadow = true;
   eastWall.receiveShadow = true;
   root.add(eastWall);
+
+  // AKBARI MAHAL (GLB model) BACKDROP behind the courtyard.
+  // The plain rear rampart wall above is only kept as a fallback if the GLB fails to load.
+  new GLTFLoader().load(
+    LAHORE_FORT_BG_MODEL_URL,
+    (gltf) => {
+      const model = gltf.scene;
+      model.traverse((child) => {
+        if ((child as THREE.Mesh).isMesh) {
+          child.castShadow = true;
+          child.receiveShadow = true;
+        }
+      });
+
+      // Normalize: longest horizontal side = FORT_BG_FOOTPRINT, centered on x/z, bottom on y = 0
+      const box = new THREE.Box3().setFromObject(model);
+      const size = box.getSize(new THREE.Vector3());
+      const k = FORT_BG_FOOTPRINT / Math.max(size.x, size.z, 0.001);
+      model.scale.setScalar(k);
+      const b2 = new THREE.Box3().setFromObject(model);
+      const c2 = b2.getCenter(new THREE.Vector3());
+      model.position.set(-c2.x, -b2.min.y, -c2.z);
+
+      const pivot = new THREE.Group();
+      pivot.position.set(FORT_BG_POSITION[0], FORT_BG_POSITION[1], FORT_BG_POSITION[2]);
+      pivot.add(model);
+      root.add(pivot);
+
+      backWall.visible = false;
+    },
+    undefined,
+    () => {
+      // GLB failed to load: keep the procedural rear rampart wall
+    },
+  );
 
   // 1. ALAMGIRI GATE (Front Grand Entrance)
   const alamgiri = new THREE.Group();

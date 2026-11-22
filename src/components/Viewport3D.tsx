@@ -315,8 +315,8 @@ export const Viewport3D: React.FC<Viewport3DProps> = ({
     });
 
     function loadCustomModel(targetModule: ModuleId, url: string | null) {
-      // The Lahore Badshah model is a half-body bust, so it is scaled smaller than a full standing figure
-      const targetHeight = targetModule === 'lahore-fort' ? 1.25 : 1.78;
+      // The Akbar Badshah model is a full standing figure, so it uses the same height as the Japanese guide
+      const targetHeight = 1.78;
       const rig: CharacterRig =
         targetModule === 'lahore-fort' ? lahoreBuild.guideRig : japaneseBuild.characterRig;
 

@@ -27,7 +27,7 @@ export const TopBar: React.FC<TopBarProps> = ({
         onClick={() => onSelectModule('lahore-fort')}
         className="font-display text-base md:text-xl font-semibold tracking-tight text-[#f4f1ea] whitespace-nowrap shrink-0 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-amber-400"
       >
-        Dastan AR
+        AR Tourist Guide
       </button>
 
       {/* Zone 2: 4 single-line navigation links */}
