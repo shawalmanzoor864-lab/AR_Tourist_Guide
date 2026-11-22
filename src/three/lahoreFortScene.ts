@@ -9,9 +9,9 @@ export const LAHORE_GUIDE_MODEL_URL = `${import.meta.env.BASE_URL}models/lahore-
 export const LAHORE_FORT_BG_MODEL_URL = `${import.meta.env.BASE_URL}models/lahore-akbari-mahal.glb`;
 
 /** Footprint (longest horizontal side) of the Akbari Mahal backdrop, in scene units */
-const FORT_BG_FOOTPRINT = 11;
-/** Where the backdrop's bottom-center sits: just behind the courtyard's rear rampart */
-const FORT_BG_POSITION: [number, number, number] = [0, 0, -10.6];
+const FORT_BG_FOOTPRINT = 8.2;
+/** Where the building's bottom-center sits (same spot as the Japanese pavilion house) */
+const FORT_BG_POSITION: [number, number, number] = [0, 0, -4.4];
 
 export interface CharacterRig {
   root: THREE.Group;
@@ -29,24 +29,6 @@ export interface LahoreFortBuildResult {
   guideRig: CharacterRig;
   markers: Map<string, { ring: THREE.Mesh; beacon: THREE.Mesh }>;
   clickableTargets: THREE.Object3D[];
-}
-
-function addRaycastProxy(
-  parent: THREE.Group,
-  landmarkId: string,
-  size: [number, number, number],
-  offset: [number, number, number],
-  clickableTargets: THREE.Object3D[],
-) {
-  const proxy = new THREE.Mesh(
-    new THREE.BoxGeometry(size[0], size[1], size[2]),
-    new THREE.MeshBasicMaterial({ visible: false }),
-  );
-  proxy.position.set(offset[0], offset[1], offset[2]);
-  proxy.layers.enable(1);
-  proxy.userData.landmarkId = landmarkId;
-  parent.add(proxy);
-  clickableTargets.push(proxy);
 }
 
 /**
@@ -243,7 +225,7 @@ export function createTourGuideAvatar(contactShadowTex: THREE.Texture): Characte
 }
 
 /**
- * Builds the Lahore Fort (Shahi Qila) architectural diorama with 6 clickable landmarks.
+ * Builds the Lahore Fort scene: the Akbari Mahal model with 6 clickable tour markers.
  */
 export function buildLahoreFortScene(
   textures: ProceduralTexturePack,
@@ -252,47 +234,6 @@ export function buildLahoreFortScene(
   const root = new THREE.Group();
   const clickableTargets: THREE.Object3D[] = [];
   const markers = new Map<string, { ring: THREE.Mesh; beacon: THREE.Mesh }>();
-
-  const sandstoneMat = new THREE.MeshStandardMaterial({
-    map: textures.sandstone,
-    roughness: 0.85,
-    metalness: 0.04,
-  });
-  const darkSandstoneMat = new THREE.MeshStandardMaterial({
-    color: 0x7c3120,
-    roughness: 0.88,
-    metalness: 0.05,
-  });
-  const marbleMat = new THREE.MeshStandardMaterial({
-    map: textures.marble,
-    roughness: 0.28,
-    metalness: 0.08,
-  });
-  const mirrorMat = new THREE.MeshStandardMaterial({
-    color: 0xe6edf5,
-    roughness: 0.08,
-    metalness: 0.94,
-  });
-  const goldMat = new THREE.MeshStandardMaterial({
-    color: 0xe3a842,
-    roughness: 0.22,
-    metalness: 0.9,
-  });
-  const kashiMat = new THREE.MeshStandardMaterial({
-    map: textures.kashiMosaic,
-    roughness: 0.35,
-    metalness: 0.15,
-  });
-  const woodMat = new THREE.MeshStandardMaterial({
-    map: textures.cedarWood,
-    roughness: 0.72,
-    metalness: 0.05,
-  });
-  const lawnMat = new THREE.MeshStandardMaterial({
-    color: 0x3b5f3a,
-    roughness: 0.95,
-    metalness: 0,
-  });
 
   // Ground courtyard plinth (always grounded at y=0)
   const courtyardBase = new THREE.Mesh(
@@ -309,37 +250,7 @@ export function buildLahoreFortScene(
   courtyardBase.receiveShadow = true;
   root.add(courtyardBase);
 
-  // Mughal Charbagh lawn strips in center courtyard
-  [-1.9, 1.9].forEach((x) => {
-    const lawn = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.04, 3.1), lawnMat);
-    lawn.position.set(x, 0.02, 1.8);
-    lawn.receiveShadow = true;
-    root.add(lawn);
-  });
-
-  // Central reflecting water channel
-  const waterChannel = new THREE.Mesh(
-    new THREE.BoxGeometry(0.7, 0.04, 5.2),
-    new THREE.MeshStandardMaterial({ color: 0x2c6b7a, roughness: 0.12, metalness: 0.65 }),
-  );
-  waterChannel.position.set(0, 0.025, 1.9);
-  root.add(waterChannel);
-
-  // Perimeter connecting rampart walls
-  const backWall = new THREE.Mesh(new THREE.BoxGeometry(11.6, 1.5, 0.5), darkSandstoneMat);
-  backWall.position.set(0, 0.75, -4.6);
-  backWall.castShadow = true;
-  backWall.receiveShadow = true;
-  root.add(backWall);
-
-  const eastWall = new THREE.Mesh(new THREE.BoxGeometry(0.5, 1.5, 8.8), darkSandstoneMat);
-  eastWall.position.set(5.6, 0.75, -0.3);
-  eastWall.castShadow = true;
-  eastWall.receiveShadow = true;
-  root.add(eastWall);
-
-  // AKBARI MAHAL (GLB model) BACKDROP behind the courtyard.
-  // The plain rear rampart wall above is only kept as a fallback if the GLB fails to load.
+  // AKBARI MAHAL (GLB model): the Lahore Fort building standing behind the guide.
   new GLTFLoader().load(
     LAHORE_FORT_BG_MODEL_URL,
     (gltf) => {
@@ -364,208 +275,8 @@ export function buildLahoreFortScene(
       pivot.position.set(FORT_BG_POSITION[0], FORT_BG_POSITION[1], FORT_BG_POSITION[2]);
       pivot.add(model);
       root.add(pivot);
-
-      backWall.visible = false;
-    },
-    undefined,
-    () => {
-      // GLB failed to load: keep the procedural rear rampart wall
     },
   );
-
-  // 1. ALAMGIRI GATE (Front Grand Entrance)
-  const alamgiri = new THREE.Group();
-  alamgiri.position.set(0, 0, 4.4);
-  root.add(alamgiri);
-
-  const gateMain = new THREE.Mesh(new THREE.BoxGeometry(3.2, 2.3, 1.0), sandstoneMat);
-  gateMain.position.y = 1.15;
-  gateMain.castShadow = true;
-  gateMain.receiveShadow = true;
-  alamgiri.add(gateMain);
-
-  const gateArchRecess = new THREE.Mesh(new THREE.BoxGeometry(1.25, 1.65, 1.06), woodMat);
-  gateArchRecess.position.y = 0.82;
-  alamgiri.add(gateArchRecess);
-
-  const gateMarbleTrim = new THREE.Mesh(new THREE.BoxGeometry(1.5, 1.85, 1.03), marbleMat);
-  gateMarbleTrim.position.y = 0.94;
-  alamgiri.add(gateMarbleTrim);
-
-  // Twin fluted bastions with marble domes
-  [-1.55, 1.55].forEach((bx) => {
-    const tower = new THREE.Mesh(new THREE.CylinderGeometry(0.58, 0.68, 2.85, 14), sandstoneMat);
-    tower.position.set(bx, 1.425, 0.1);
-    tower.castShadow = true;
-    tower.receiveShadow = true;
-    alamgiri.add(tower);
-
-    const dome = new THREE.Mesh(
-      new THREE.SphereGeometry(0.52, 16, 12, 0, Math.PI * 2, 0, Math.PI * 0.65),
-      marbleMat,
-    );
-    dome.position.set(bx, 2.88, 0.1);
-    dome.castShadow = true;
-    alamgiri.add(dome);
-
-    const finial = new THREE.Mesh(new THREE.ConeGeometry(0.07, 0.34, 8), goldMat);
-    finial.position.set(bx, 3.45, 0.1);
-    alamgiri.add(finial);
-  });
-  addRaycastProxy(alamgiri, 'alamgiri-gate', [4.4, 3.8, 1.8], [0, 1.8, 0], clickableTargets);
-
-  // 2. SHEESH MAHAL (Northwest White Marble Palace of Mirrors)
-  const sheesh = new THREE.Group();
-  sheesh.position.set(-3.8, 0, -2.6);
-  root.add(sheesh);
-
-  const sheeshPlinth = new THREE.Mesh(new THREE.BoxGeometry(3.4, 0.6, 2.6), sandstoneMat);
-  sheeshPlinth.position.y = 0.3;
-  sheeshPlinth.castShadow = true;
-  sheeshPlinth.receiveShadow = true;
-  sheesh.add(sheeshPlinth);
-
-  const sheeshHall = new THREE.Mesh(new THREE.BoxGeometry(3.0, 1.5, 2.1), marbleMat);
-  sheeshHall.position.y = 1.35;
-  sheeshHall.castShadow = true;
-  sheeshHall.receiveShadow = true;
-  sheesh.add(sheeshHall);
-
-  // Mirror-inlaid vaulted chamber facade
-  const mirrorPanel = new THREE.Mesh(new THREE.BoxGeometry(2.2, 1.05, 0.12), mirrorMat);
-  mirrorPanel.position.set(0, 1.25, 1.04);
-  sheesh.add(mirrorPanel);
-
-  // Chhatri cupolas on roof
-  [-0.95, 0.95].forEach((cx) => {
-    const chhatri = new THREE.Mesh(new THREE.SphereGeometry(0.38, 14, 10), marbleMat);
-    chhatri.position.set(cx, 2.3, 0);
-    chhatri.castShadow = true;
-    sheesh.add(chhatri);
-    const tip = new THREE.Mesh(new THREE.ConeGeometry(0.05, 0.25, 8), goldMat);
-    tip.position.set(cx, 2.75, 0);
-    sheesh.add(tip);
-  });
-  addRaycastProxy(sheesh, 'sheesh-mahal', [3.6, 3.1, 2.8], [0, 1.5, 0], clickableTargets);
-
-  // 3. DIWAN-E-AAM (Central 40-Pillar Sandstone Hall)
-  const diwan = new THREE.Group();
-  diwan.position.set(0.2, 0, -0.4);
-  root.add(diwan);
-
-  const diwanPlinth = new THREE.Mesh(new THREE.BoxGeometry(3.8, 0.35, 2.2), sandstoneMat);
-  diwanPlinth.position.y = 0.175;
-  diwanPlinth.receiveShadow = true;
-  diwan.add(diwanPlinth);
-
-  const diwanRoof = new THREE.Mesh(new THREE.BoxGeometry(3.6, 0.25, 2.0), sandstoneMat);
-  diwanRoof.position.y = 1.8;
-  diwanRoof.castShadow = true;
-  diwan.add(diwanRoof);
-
-  // Colonnade pillars (3x5 grid)
-  for (let px = -1.45; px <= 1.45; px += 0.725) {
-    for (let pz = -0.75; pz <= 0.75; pz += 0.75) {
-      const col = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.095, 1.35, 10), sandstoneMat);
-      col.position.set(px, 1.02, pz);
-      col.castShadow = true;
-      diwan.add(col);
-    }
-  }
-
-  // Elevated Marble Jharokha Balcony
-  const jharokha = new THREE.Mesh(new THREE.BoxGeometry(0.95, 0.9, 0.75), marbleMat);
-  jharokha.position.set(0, 1.15, -0.55);
-  jharokha.castShadow = true;
-  diwan.add(jharokha);
-  addRaycastProxy(diwan, 'diwan-e-aam', [4.0, 2.4, 2.4], [0, 1.1, 0], clickableTargets);
-
-  // 4. NAULAKHA PAVILION (Curved Bangaldar Marble Pavilion)
-  const naulakha = new THREE.Group();
-  naulakha.position.set(-5.1, 0, 0.9);
-  root.add(naulakha);
-
-  const nauBase = new THREE.Mesh(new THREE.BoxGeometry(2.1, 0.45, 1.8), marbleMat);
-  nauBase.position.y = 0.225;
-  nauBase.castShadow = true;
-  nauBase.receiveShadow = true;
-  naulakha.add(nauBase);
-
-  [-0.75, 0.75].forEach((x) => {
-    [-0.55, 0.55].forEach((z) => {
-      const pillar = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.08, 1.25, 10), marbleMat);
-      pillar.position.set(x, 1.05, z);
-      pillar.castShadow = true;
-      naulakha.add(pillar);
-    });
-  });
-
-  // Curved Bengali roof (extruded gentle arch)
-  const nauRoof = new THREE.Mesh(
-    new THREE.CylinderGeometry(1.3, 1.4, 2.1, 16, 1, false, -Math.PI * 0.35, Math.PI * 0.7),
-    marbleMat,
-  );
-  nauRoof.rotation.z = Math.PI / 2;
-  nauRoof.scale.set(0.42, 1, 0.85);
-  nauRoof.position.y = 1.48;
-  nauRoof.castShadow = true;
-  naulakha.add(nauRoof);
-
-  const nauFinial = new THREE.Mesh(new THREE.SphereGeometry(0.11, 12, 12), goldMat);
-  nauFinial.position.y = 2.18;
-  naulakha.add(nauFinial);
-  addRaycastProxy(naulakha, 'naulakha-pavilion', [2.4, 2.6, 2.2], [0, 1.2, 0], clickableTargets);
-
-  // 5. PICTURE WALL & HATHI POL (Southwest Glazed Tile Mural Wall)
-  const picWall = new THREE.Group();
-  picWall.position.set(-4.9, 0, 4.1);
-  root.add(picWall);
-
-  const wallCore = new THREE.Mesh(new THREE.BoxGeometry(3.4, 2.2, 0.65), sandstoneMat);
-  wallCore.position.y = 1.1;
-  wallCore.castShadow = true;
-  wallCore.receiveShadow = true;
-  picWall.add(wallCore);
-
-  const muralFacade = new THREE.Mesh(new THREE.BoxGeometry(3.25, 1.8, 0.7), kashiMat);
-  muralFacade.position.y = 1.12;
-  picWall.add(muralFacade);
-
-  const hathiArch = new THREE.Mesh(new THREE.BoxGeometry(0.85, 1.35, 0.76), woodMat);
-  hathiArch.position.set(0.95, 0.68, 0);
-  picWall.add(hathiArch);
-  addRaycastProxy(picWall, 'picture-wall', [3.6, 2.5, 1.4], [0, 1.2, 0], clickableTargets);
-
-  // 6. MOTI MASJID (Eastern White Marble Pearl Mosque)
-  const moti = new THREE.Group();
-  moti.position.set(4.2, 0, -2.5);
-  root.add(moti);
-
-  const motiCourtyard = new THREE.Mesh(new THREE.BoxGeometry(3.1, 0.3, 2.8), marbleMat);
-  motiCourtyard.position.y = 0.15;
-  motiCourtyard.receiveShadow = true;
-  moti.add(motiCourtyard);
-
-  const prayerHall = new THREE.Mesh(new THREE.BoxGeometry(2.7, 1.35, 1.35), marbleMat);
-  prayerHall.position.set(0, 0.95, -0.55);
-  prayerHall.castShadow = true;
-  prayerHall.receiveShadow = true;
-  moti.add(prayerHall);
-
-  // Triple onion marble domes
-  [-0.78, 0, 0.78].forEach((dx, idx) => {
-    const rad = idx === 1 ? 0.44 : 0.34;
-    const dome = new THREE.Mesh(new THREE.SphereGeometry(rad, 16, 14), marbleMat);
-    dome.scale.set(1, 1.18, 1);
-    dome.position.set(dx, 1.85, -0.55);
-    dome.castShadow = true;
-    moti.add(dome);
-
-    const spire = new THREE.Mesh(new THREE.ConeGeometry(0.05, 0.28, 8), goldMat);
-    spire.position.set(dx, 1.85 + rad * 1.18 + 0.12, -0.55);
-    moti.add(spire);
-  });
-  addRaycastProxy(moti, 'moti-masjid', [3.3, 2.8, 3.0], [0, 1.3, 0], clickableTargets);
 
   // AR Spatial Beacon Rings above every clickable landmark
   const ringGeo = new THREE.RingGeometry(0.32, 0.42, 32);

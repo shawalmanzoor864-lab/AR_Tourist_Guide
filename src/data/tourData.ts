@@ -67,10 +67,10 @@ export const LAHORE_FORT_STOPS: TourStop[] = [
     summary:
       'Constructed as the ceremonial royal entrance facing the Badshahi Mosque, framed by twin fluted bastion towers topped with lotus-bud marble domes.',
     highlight: 'Twin fluted sandstone bastions & grand pointed Mughal pishtaq arch',
-    position: [0, 1.4, 4.4],
-    guideSpot: [2.1, 0, 5.6],
-    cameraPos: [4.8, 3.6, 10.2],
-    cameraTarget: [0.4, 1.5, 4.4],
+    position: [0, 1.2, -0.3],
+    guideSpot: [1.9, 0, 1.5],
+    cameraPos: [3.8, 2.6, 6.8],
+    cameraTarget: [0, 1.7, -0.6],
     narrationEn:
       'Welcome to the Alamgiri Gate, the grand western entrance of Lahore Fort built in 1673 by Emperor Aurangzeb. Notice the twin semi-circular fluted towers crowned with white marble lotus domes. Imperial processions once marched beneath this towering sandstone arch straight toward the Badshahi Mosque courtyard.',
     narrationUr:
@@ -86,10 +86,10 @@ export const LAHORE_FORT_STOPS: TourStop[] = [
     summary:
       'Set within the Shah Burj quadrangle, its marble walls and vaulted ceilings are inlaid with thousands of convex mirrors and gilded stucco work.',
     highlight: 'Convex Aleppo mirror mosaic ceiling & cusped Makrana marble arches',
-    position: [-3.8, 1.8, -2.6],
-    guideSpot: [-1.7, 0, -0.8],
-    cameraPos: [-0.8, 3.8, 2.8],
-    cameraTarget: [-3.5, 1.6, -2.2],
+    position: [-2.7, 2.2, -0.3],
+    guideSpot: [-1.2, 0, 1.6],
+    cameraPos: [-4.6, 3.0, 6.4],
+    cameraTarget: [-2.7, 2.4, -0.6],
     narrationEn:
       'You are now looking at Sheesh Mahal, the famed Palace of Mirrors commissioned by Emperor Shah Jahan in 1631. Over nine hundred thousand tiny convex mirrors from Aleppo were embedded into the vaulted plaster ceiling so that a single candle flame would illuminate the entire chamber like a starlit sky.',
     narrationUr:
@@ -105,10 +105,10 @@ export const LAHORE_FORT_STOPS: TourStop[] = [
     summary:
       'A sweeping red sandstone colonnade supported by forty carved pillars where the Mughal emperor heard petitions from citizens in the open courtyard.',
     highlight: 'Elevated marble Jharokha-e-Darshan throne balcony above 40 pillars',
-    position: [0.2, 1.3, -0.4],
-    guideSpot: [2.4, 0, 1.4],
-    cameraPos: [5.4, 3.8, 4.8],
-    cameraTarget: [0.4, 1.4, -0.2],
+    position: [0, 3.0, -0.3],
+    guideSpot: [-1.9, 0, 1.5],
+    cameraPos: [0.4, 3.8, 7.4],
+    cameraTarget: [0, 3.0, -0.6],
     narrationEn:
       'This forty-pillar red sandstone pavilion is the Diwan-e-Aam, the Hall of Public Audience. Each morning, the emperor appeared on the elevated white marble Jharokha balcony at its center while ministers, envoys, and common citizens gathered across the courtyard below to present petitions.',
     narrationUr:
@@ -124,10 +124,10 @@ export const LAHORE_FORT_STOPS: TourStop[] = [
     summary:
       'Famous for its graceful curved Bengali-style roof and delicate semi-precious stone inlay, traditionally said to have cost nine lakh rupees.',
     highlight: 'Curved Bangaldar marble canopy inlaid with lapis, agate & carnelian',
-    position: [-5.1, 1.6, 0.9],
-    guideSpot: [-3.1, 0, 2.3],
-    cameraPos: [-1.4, 3.1, 5.6],
-    cameraTarget: [-4.8, 1.4, 0.9],
+    position: [2.7, 2.2, -0.3],
+    guideSpot: [1.3, 0, 1.6],
+    cameraPos: [4.6, 3.0, 6.4],
+    cameraTarget: [2.7, 2.4, -0.6],
     narrationEn:
       'Behold the Naulakha Pavilion, built in 1633 along the western terrace of the Shah Burj. Its distinctive curved Bangaldar roof was inspired by Bengal architecture, and its white marble columns feature microscopic pietra dura floral inlays crafted with lapis lazuli and carnelian.',
     narrationUr:
@@ -143,10 +143,10 @@ export const LAHORE_FORT_STOPS: TourStop[] = [
     summary:
       'The world’s largest continuous glazed tile mosaic facade, depicting polo players, royal elephants, mythical dragons, and floral arabesques.',
     highlight: 'Hand-glazed Kashi tile panels stretching across the northern fortification',
-    position: [-4.9, 1.5, 4.1],
-    guideSpot: [-2.8, 0, 5.5],
-    cameraPos: [-1.8, 3.2, 9.4],
-    cameraTarget: [-4.7, 1.5, 4.1],
+    position: [-3.3, 0.8, -0.3],
+    guideSpot: [-2.0, 0, 1.8],
+    cameraPos: [-5.4, 2.2, 5.6],
+    cameraTarget: [-3.3, 1.2, -0.6],
     narrationEn:
       'Spanning the northern and western fortification walls is the iconic Picture Wall alongside Hathi Pol, the Elephant Gate. Commissioned under Emperor Jahangir and completed by Shah Jahan, thousands of glazed Kashi tiles illustrate royal elephant processions, polo matches, and Persian floral motifs.',
     narrationUr:
@@ -162,10 +162,10 @@ export const LAHORE_FORT_STOPS: TourStop[] = [
     summary:
       'An intimate triple-domed mosque carved entirely from luminous white Makrana marble, reserved for the royal Mughal household.',
     highlight: 'Three fluted onion domes with gilded finials & serene marble courtyard',
-    position: [4.2, 1.5, -2.5],
-    guideSpot: [2.2, 0, -0.7],
-    cameraPos: [0.8, 3.4, 2.8],
-    cameraTarget: [4.0, 1.4, -2.3],
+    position: [3.3, 0.8, -0.3],
+    guideSpot: [2.0, 0, 1.8],
+    cameraPos: [5.4, 2.2, 5.6],
+    cameraTarget: [3.3, 1.2, -0.6],
     narrationEn:
       'On the eastern edge stands Moti Masjid, the Pearl Mosque, built around 1635 from pure white Makrana marble. Its three bulbous domes and five-arched prayer hall gleam softly under the sun, offering a tranquil sanctuary tucked beside the royal quarters.',
     narrationUr:
