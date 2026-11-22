@@ -263,7 +263,7 @@ export default function App() {
         <div className="pointer-events-none absolute top-4 left-1/2 -translate-x-1/2 z-10 text-center">
           <p className="text-xs text-[#e5dfd3]/85 bg-[#11151c]/80 border border-white/10 px-3.5 py-1.5 rounded-lg md:whitespace-nowrap max-w-[92vw]">
             {activeModule === 'lahore-fort'
-              ? 'Click any Lahore Fort landmark in 3D or below for AR guide voice-over'
+              ? 'Select any Lahore Fort landmark below for AR guide voice-over'
               : 'Click the Japanese commander or the heritage house to hear voice-over'}
           </p>
         </div>

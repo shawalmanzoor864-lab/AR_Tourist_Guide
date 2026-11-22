@@ -278,38 +278,7 @@ export function buildLahoreFortScene(
     },
   );
 
-  // AR Spatial Beacon Rings above every clickable landmark
-  const ringGeo = new THREE.RingGeometry(0.32, 0.42, 32);
-  const beaconGeo = new THREE.OctahedronGeometry(0.14, 0);
-
-  LAHORE_FORT_STOPS.forEach((stop) => {
-    const ringMat = new THREE.MeshBasicMaterial({
-      color: 0xf59e0b,
-      side: THREE.DoubleSide,
-      transparent: true,
-      opacity: 0.75,
-    });
-    const ring = new THREE.Mesh(ringGeo, ringMat);
-    ring.rotation.x = -Math.PI / 2;
-    ring.position.set(stop.position[0], stop.position[1] + 1.55, stop.position[2]);
-    root.add(ring);
-
-    const beaconMat = new THREE.MeshStandardMaterial({
-      color: 0xfbbf24,
-      emissive: 0xd97706,
-      emissiveIntensity: 0.55,
-      roughness: 0.2,
-      metalness: 0.8,
-    });
-    const beacon = new THREE.Mesh(beaconGeo, beaconMat);
-    beacon.position.set(stop.position[0], stop.position[1] + 1.88, stop.position[2]);
-    beacon.layers.enable(1);
-    beacon.userData.landmarkId = stop.id;
-    clickableTargets.push(beacon);
-    root.add(beacon);
-
-    markers.set(stop.id, { ring, beacon });
-  });
+  // Floating beacon/ring markers removed: stops are selected from the bottom dock.
 
   // Create Tourist Guide Avatar standing at first stop
   const guideRig = createTourGuideAvatar(textures.contactShadow);
